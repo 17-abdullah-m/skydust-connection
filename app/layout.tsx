@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
+import { CartProvider } from "./components/CartProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,9 +20,9 @@ const display = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Cloudust — SaaS by Skydust Connection",
+  title: "SKYDUST — Automatic air fresheners",
   description:
-    "Cloudust is the operations SaaS from Skydust Connection. Get started with a workspace, then sign in as Admin or Manager.",
+    "SKYDUST automatic air freshener subscription. Shop diffusers and refills, or start a company workspace.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -30,7 +31,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${display.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-white text-[#111]">
+        <CartProvider>{children}</CartProvider>
+      </body>
     </html>
   );
 }

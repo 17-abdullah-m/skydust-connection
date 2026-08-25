@@ -4,21 +4,14 @@ import { useState } from "react";
 
 type Role = "admin" | "manager";
 
-const copy: Record<
-  Role,
-  { title: string; hint: string; accent: string; button: string }
-> = {
+const copy: Record<Role, { title: string; hint: string }> = {
   admin: {
     title: "Admin login",
-    hint: "Use your Cloudust administrator credentials.",
-    accent: "text-[#c4a574]",
-    button: "bg-[#c4a574] text-[#1a2a3a] hover:bg-[#d4b98a]",
+    hint: "Company tenant owner — devices, billing, manager invites.",
   },
   manager: {
     title: "Manager login",
-    hint: "Use your Cloudust manager credentials.",
-    accent: "text-[#7eb0c9]",
-    button: "bg-[#3d6b8c] text-white hover:bg-[#4a7fa3]",
+    hint: "Invited seat — rooms, refills, and status.",
   },
 };
 
@@ -37,7 +30,7 @@ export function LoginForm({ role }: { role: Role }) {
       }}
     >
       <div>
-        <label htmlFor="email" className="text-xs tracking-[0.18em] uppercase text-[#f4f0ea]/55">
+        <label htmlFor="email" className="text-xs tracking-[0.18em] uppercase text-[#1c2430]/45">
           Email
         </label>
         <input
@@ -47,12 +40,12 @@ export function LoginForm({ role }: { role: Role }) {
           autoComplete="username"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-[#f4f0ea] outline-none ring-[#c4a574]/40 placeholder:text-[#f4f0ea]/30 focus:ring-2"
-          placeholder="you@skydust.connection"
+          className="mt-2 w-full rounded-xl border border-[#1c2430]/12 bg-white px-4 py-3 text-sm outline-none ring-[#7eb89a]/40 placeholder:text-[#1c2430]/30 focus:ring-2"
+          placeholder="you@company.com"
         />
       </div>
       <div>
-        <label htmlFor="password" className="text-xs tracking-[0.18em] uppercase text-[#f4f0ea]/55">
+        <label htmlFor="password" className="text-xs tracking-[0.18em] uppercase text-[#1c2430]/45">
           Password
         </label>
         <input
@@ -62,22 +55,20 @@ export function LoginForm({ role }: { role: Role }) {
           autoComplete="current-password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-[#f4f0ea] outline-none ring-[#c4a574]/40 placeholder:text-[#f4f0ea]/30 focus:ring-2"
+          className="mt-2 w-full rounded-xl border border-[#1c2430]/12 bg-white px-4 py-3 text-sm outline-none ring-[#7eb89a]/40 placeholder:text-[#1c2430]/30 focus:ring-2"
           placeholder="••••••••"
         />
       </div>
       <button
         type="submit"
-        className={`mt-2 w-full rounded-xl px-4 py-3 text-sm font-semibold tracking-wide transition ${ui.button}`}
+        className="mt-2 w-full rounded-xl bg-[#1c2430] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#2c3848]"
       >
         Sign in
       </button>
       {submitted ? (
-        <p className={`text-center text-sm ${ui.accent}`}>
-          {ui.title} is ready. Authentication can be wired next.
-        </p>
+        <p className="text-center text-sm text-[#7eb89a]">{ui.title} is ready to connect to Firebase.</p>
       ) : (
-        <p className="text-center text-sm text-[#f4f0ea]/45">{ui.hint}</p>
+        <p className="text-center text-sm text-[#1c2430]/45">{ui.hint}</p>
       )}
     </form>
   );

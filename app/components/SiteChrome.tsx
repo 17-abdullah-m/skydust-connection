@@ -1,106 +1,96 @@
-import Link from "next/link";
+"use client";
 
-export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "solid" }) {
-  const onDark = variant === "dark";
+import Image from "next/image";
+import Link from "next/link";
+import { useCart } from "./CartProvider";
+
+export function SiteHeader() {
+  const { count } = useCart();
 
   return (
-    <header
-      className={`relative z-20 flex items-center justify-between gap-4 px-5 py-5 sm:px-10 ${
-        onDark ? "text-[#f4f0ea]" : "border-b border-[#1a2a3a]/10 bg-[#f4f0ea] text-[#1a2a3a]"
-      }`}
-    >
-      <Link href="/" className="flex items-center gap-3">
-        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#c4a574]/50 bg-[#c4a574]/15 text-sm font-semibold text-[#c4a574]">
-          C
-        </span>
-        <span className="leading-tight">
-          <span className="block text-[10px] font-medium tracking-[0.22em] text-[#c4a574] uppercase">
-            Skydust Connection
-          </span>
-          <span className="font-display text-lg font-semibold">Cloudust</span>
-        </span>
-      </Link>
+    <div className="sticky top-0 z-30 bg-white">
+      <p className="bg-[#111] px-4 py-2 text-center text-[11px] tracking-[0.16em] text-white uppercase">
+        Free shipping on auto-refill · SKYDUST
+      </p>
+      <header className="flex items-center justify-between gap-4 border-b border-[#eee] px-4 py-3 sm:px-8">
+        <nav className="hidden items-center gap-6 text-sm text-[#444] md:flex">
+          <Link href="/shop" className="hover:text-[#111]">
+            Shop
+          </Link>
+          <Link href="/#featured" className="hover:text-[#111]">
+            Collection
+          </Link>
+          <Link href="/get-started" className="hover:text-[#111]">
+            Subscribe
+          </Link>
+        </nav>
 
-      <nav className="hidden items-center gap-7 text-sm text-current/70 md:flex">
-        <a href="/#product" className="hover:text-current">
-          Product
-        </a>
-        <a href="/#roles" className="hover:text-current">
-          Roles
-        </a>
-        <a href="/#pricing" className="hover:text-current">
-          Pricing
-        </a>
-        <a href="/#faq" className="hover:text-current">
-          FAQ
-        </a>
-      </nav>
+        <Link href="/" className="flex items-center justify-center">
+          <Image
+            src="/skydust-logo.png"
+            alt="SKYDUST"
+            width={464}
+            height={295}
+            priority
+            className="h-8 w-auto sm:h-10"
+          />
+        </Link>
 
-      <div className="flex items-center gap-2 sm:gap-3">
-        <Link
-          href="/login"
-          className={`hidden rounded-full px-4 py-2 text-sm sm:inline-flex ${
-            onDark ? "text-[#f4f0ea]/80 hover:text-[#f4f0ea]" : "text-[#1a2a3a]/70 hover:text-[#1a2a3a]"
-          }`}
-        >
-          Log in
-        </Link>
-        <Link
-          href="/get-started"
-          className="rounded-full bg-[#c4a574] px-4 py-2 text-sm font-semibold text-[#1a2a3a] transition hover:bg-[#d4b98a]"
-        >
-          Get started
-        </Link>
-      </div>
-    </header>
+        <div className="flex items-center gap-4 text-sm">
+          <Link href="/login" className="hidden text-[#444] hover:text-[#111] sm:inline">
+            Log in
+          </Link>
+          <Link href="/cart" className="text-[#111]">
+            Cart ({count})
+          </Link>
+        </div>
+      </header>
+    </div>
   );
 }
 
 export function SiteFooter() {
   return (
-    <footer className="relative z-10 border-t border-white/10 bg-[#152230] px-5 py-12 text-[#f4f0ea] sm:px-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10 sm:flex-row sm:justify-between">
-        <div>
-          <p className="text-[10px] tracking-[0.22em] text-[#c4a574] uppercase">
-            Skydust Connection
-          </p>
-          <p className="font-display mt-1 text-2xl font-semibold">Cloudust</p>
-          <p className="mt-3 max-w-xs text-sm leading-6 text-[#f4f0ea]/55">
-            The operations SaaS for teams that run on two seats: Admin and
-            Manager.
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-10 text-sm sm:grid-cols-3">
+    <footer className="mt-auto border-t border-[#eee] bg-white px-4 py-12 sm:px-8">
+      <div className="mx-auto flex max-w-6xl flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
+        <Link href="/">
+          <Image
+            src="/skydust-logo.png"
+            alt="SKYDUST"
+            width={464}
+            height={295}
+            className="h-8 w-auto"
+          />
+        </Link>
+        <div className="grid grid-cols-2 gap-10 text-sm">
           <div className="space-y-2">
-            <p className="text-xs tracking-[0.18em] text-[#c4a574] uppercase">
-              Product
-            </p>
-            <a href="/#product" className="block text-[#f4f0ea]/65 hover:text-[#f4f0ea]">
-              Features
-            </a>
-            <a href="/#pricing" className="block text-[#f4f0ea]/65 hover:text-[#f4f0ea]">
-              Pricing
-            </a>
-            <Link href="/get-started" className="block text-[#f4f0ea]/65 hover:text-[#f4f0ea]">
-              Get started
+            <p className="text-xs tracking-[0.16em] text-[#888] uppercase">Shop</p>
+            <Link href="/shop" className="block text-[#444] hover:text-[#111]">
+              All products
+            </Link>
+            <Link href="/#featured" className="block text-[#444] hover:text-[#111]">
+              Air fresheners
+            </Link>
+            <Link href="/get-started" className="block text-[#444] hover:text-[#111]">
+              Subscribe
             </Link>
           </div>
           <div className="space-y-2">
-            <p className="text-xs tracking-[0.18em] text-[#c4a574] uppercase">
-              Access
-            </p>
-            <Link href="/login/admin" className="block text-[#f4f0ea]/65 hover:text-[#f4f0ea]">
+            <p className="text-xs tracking-[0.16em] text-[#888] uppercase">Account</p>
+            <Link href="/login/admin" className="block text-[#444] hover:text-[#111]">
               Admin login
             </Link>
-            <Link href="/login/manager" className="block text-[#f4f0ea]/65 hover:text-[#f4f0ea]">
+            <Link href="/login/manager" className="block text-[#444] hover:text-[#111]">
               Manager login
+            </Link>
+            <Link href="/cart" className="block text-[#444] hover:text-[#111]">
+              Cart
             </Link>
           </div>
         </div>
       </div>
-      <p className="mx-auto mt-12 max-w-6xl text-xs text-[#f4f0ea]/35">
-        © {new Date().getFullYear()} Skydust Connection. Cloudust is a SaaS
-        product of Skydust Connection.
+      <p className="mx-auto mt-10 max-w-6xl text-xs text-[#999]">
+        © {new Date().getFullYear()} SKYDUST. Automatic air freshener subscription.
       </p>
     </footer>
   );

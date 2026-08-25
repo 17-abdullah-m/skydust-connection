@@ -3,24 +3,16 @@ import { GetStartedForm } from "./GetStartedForm";
 
 export default function GetStartedPage() {
   return (
-    <div className="relative flex min-h-full flex-1 flex-col bg-[#1a2a3a] text-[#f4f0ea]">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 45% at 50% -15%, rgba(196,165,116,0.28), transparent 55%)",
-        }}
-      />
+    <div className="relative flex min-h-full flex-1 flex-col bg-[#f7f4ee] text-[#1c2430]">
       <SiteHeader />
-      <main className="relative z-10 mx-auto w-full max-w-lg flex-1 px-5 py-12 sm:px-10">
-        <p className="text-xs tracking-[0.28em] text-[#c4a574] uppercase">
-          Start your trial
+      <main className="mx-auto w-full max-w-lg flex-1 px-5 py-12 sm:px-10">
+        <p className="text-xs tracking-[0.28em] text-[#7eb89a] uppercase">
+          Start your tenant
         </p>
         <h1 className="font-display mt-3 text-4xl font-semibold">Get started</h1>
-        <p className="mt-3 text-sm leading-6 text-[#f4f0ea]/70">
-          Open a Cloudust workspace for Skydust Connection operations. Admins
-          create the account. Managers join after they are invited.
+        <p className="mt-3 text-sm leading-6 text-[#1c2430]/65">
+          Sign up as Admin. Your company name becomes the Cloudust tenant.
+          Invite Managers after the workspace exists.
         </p>
         <GetStartedForm />
       </main>

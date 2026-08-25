@@ -8,15 +8,15 @@ export function GetStartedForm() {
 
   if (submitted) {
     return (
-      <div className="mt-10 rounded-2xl border border-[#c4a574]/40 bg-[#c4a574]/10 p-6 text-center">
-        <p className="font-display text-2xl font-semibold">Workspace queued</p>
-        <p className="mt-3 text-sm leading-6 text-[#f4f0ea]/70">
-          Your Cloudust trial request is in. Next we will wire this form to
-          create the Admin workspace and send the invite.
+      <div className="mt-10 rounded-2xl border border-[#7eb89a]/40 bg-[#f3faf6] p-6 text-center">
+        <p className="font-display text-2xl font-semibold">Tenant queued</p>
+        <p className="mt-3 text-sm leading-6 text-[#1c2430]/65">
+          Your company workspace is ready to connect. Next, Admin login and
+          Manager invites will write to Firebase.
         </p>
         <Link
           href="/login/admin"
-          className="mt-6 inline-flex text-sm font-medium text-[#c4a574]"
+          className="mt-6 inline-flex text-sm font-medium text-[#7eb89a]"
         >
           Go to Admin login →
         </Link>
@@ -43,58 +43,47 @@ export function GetStartedForm() {
         />
       </div>
       <Field
-        label="Company / workspace name"
+        label="Company name (tenant ID)"
         id="company"
         type="text"
         autoComplete="organization"
-        placeholder="Skydust Connection"
+        placeholder="Your company"
       />
       <div>
-        <p className="text-xs tracking-[0.18em] uppercase text-[#f4f0ea]/55">
+        <p className="text-xs tracking-[0.18em] uppercase text-[#1c2430]/45">
           Your seat
         </p>
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/15 bg-white/5 p-4 has-[:checked]:border-[#c4a574]/70">
-            <input
-              type="radio"
-              name="seat"
-              value="admin"
-              defaultChecked
-              className="mt-1"
-            />
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#1c2430]/10 bg-white p-4 has-[:checked]:border-[#7eb89a]">
+            <input type="radio" name="seat" value="admin" defaultChecked className="mt-1" />
             <span>
               <span className="block text-sm font-medium">Admin</span>
-              <span className="mt-1 block text-xs text-[#f4f0ea]/55">
-                I will own the workspace and invite managers.
+              <span className="mt-1 block text-xs text-[#1c2430]/50">
+                I own the company tenant and invite managers.
               </span>
             </span>
           </label>
-          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/15 bg-white/5 p-4 has-[:checked]:border-[#7eb0c9]/70">
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#1c2430]/10 bg-white p-4 has-[:checked]:border-[#7eb89a]">
             <input type="radio" name="seat" value="manager" className="mt-1" />
             <span>
               <span className="block text-sm font-medium">Manager</span>
-              <span className="mt-1 block text-xs text-[#f4f0ea]/55">
-                I was invited — I need a Manager seat.
+              <span className="mt-1 block text-xs text-[#1c2430]/50">
+                I was invited — I need Manager access.
               </span>
             </span>
           </label>
         </div>
       </div>
-      <Field
-        label="Password"
-        id="password"
-        type="password"
-        autoComplete="new-password"
-      />
+      <Field label="Password" id="password" type="password" autoComplete="new-password" />
       <button
         type="submit"
-        className="w-full rounded-xl bg-[#c4a574] px-4 py-3 text-sm font-semibold text-[#1a2a3a] transition hover:bg-[#d4b98a]"
+        className="w-full rounded-xl bg-[#1c2430] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#2c3848]"
       >
-        Create my Cloudust workspace
+        Create my Cloudust tenant
       </button>
-      <p className="text-center text-sm text-[#f4f0ea]/45">
+      <p className="text-center text-sm text-[#1c2430]/45">
         Already have access?{" "}
-        <Link href="/login" className="text-[#c4a574] hover:underline">
+        <Link href="/login" className="text-[#7eb89a] hover:underline">
           Log in
         </Link>
       </p>
@@ -117,7 +106,7 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="text-xs tracking-[0.18em] uppercase text-[#f4f0ea]/55">
+      <label htmlFor={id} className="text-xs tracking-[0.18em] uppercase text-[#1c2430]/45">
         {label}
       </label>
       <input
@@ -127,7 +116,7 @@ function Field({
         required
         autoComplete={autoComplete}
         placeholder={placeholder}
-        className="mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-[#f4f0ea] outline-none ring-[#c4a574]/40 placeholder:text-[#f4f0ea]/30 focus:ring-2"
+        className="mt-2 w-full rounded-xl border border-[#1c2430]/12 bg-white px-4 py-3 text-sm text-[#1c2430] outline-none ring-[#7eb89a]/40 placeholder:text-[#1c2430]/30 focus:ring-2"
       />
     </div>
   );
