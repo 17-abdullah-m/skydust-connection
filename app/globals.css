@@ -29,8 +29,6 @@ body {
 }
 
 .skydust-ticker {
-  display: flex;
-  width: max-content;
   animation: skydust-ticker 38s linear infinite;
 }
 

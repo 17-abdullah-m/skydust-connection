@@ -3,7 +3,7 @@ import Link from "next/link";
 import { HeroSlideshow } from "./components/HeroSlideshow";
 import { ProductGrid } from "./components/ProductGrid";
 import { SiteFooter, SiteHeader } from "./components/SiteChrome";
-import { collections, products } from "@/lib/products";
+import { featuredCollections, products } from "@/lib/products";
 
 export default function Home() {
   return (
@@ -17,7 +17,7 @@ export default function Home() {
             Shop By Collections
           </h2>
           <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-5 md:gap-5">
-            {collections.map((item) => (
+            {featuredCollections.map((item) => (
               <Link key={item.slug} href={`/collections/${item.slug}`} className="group block">
                 <div className="relative aspect-square overflow-hidden bg-neutral-100">
                   <Image

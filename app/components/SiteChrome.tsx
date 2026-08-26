@@ -22,17 +22,16 @@ function Logo() {
 }
 
 function CountryTicker() {
-  const row = [...countries, ...countries];
+  const line = [...countries, ...countries];
   return (
-    <div className="overflow-hidden bg-black text-white">
-      <div className="skydust-ticker py-2">
-        {row.map((name, index) => (
+    <div className="overflow-hidden bg-black py-2">
+      <div className="skydust-ticker flex w-max gap-10 whitespace-nowrap">
+        {line.map((country, index) => (
           <span
-            key={`${name}-${index}`}
-            className="inline-flex items-center px-6 text-[11px] tracking-[0.28em] uppercase"
+            key={`${country}-${index}`}
+            className="text-[11px] tracking-[0.28em] text-white uppercase"
           >
-            {name}
-            <span className="ml-6 opacity-40">•</span>
+            {country}
           </span>
         ))}
       </div>
@@ -71,17 +70,16 @@ export function SiteHeader() {
                 onMouseEnter={() => setHover(item.label)}
                 onMouseLeave={() => setHover(null)}
               >
-                <Link href={item.href} className="inline-flex items-center whitespace-nowrap py-2 hover:opacity-60">
+                <Link href={item.href} className="whitespace-nowrap hover:opacity-60">
                   {item.label}
-                  {item.children ? <span className="ml-1 text-[10px]">▾</span> : null}
                 </Link>
                 {item.children && hover === item.label ? (
-                  <div className="absolute left-0 top-full z-40 min-w-64 border border-neutral-200 bg-white py-2 shadow-sm">
+                  <div className="absolute left-0 top-full z-40 min-w-64 border border-neutral-200 bg-white py-3 shadow-sm">
                     {item.children.map((child) => (
                       <Link
                         key={child.href + child.label}
                         href={child.href}
-                        className="block px-4 py-2 text-[13px] hover:bg-neutral-50"
+                        className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50"
                       >
                         {child.label}
                       </Link>
@@ -110,9 +108,9 @@ export function SiteHeader() {
         </div>
 
         {open ? (
-          <nav className="grid gap-3 border-t border-neutral-200 px-4 py-4 text-sm md:hidden">
+          <nav className="grid max-h-[70vh] gap-1 overflow-auto border-t border-neutral-200 px-4 py-4 text-sm md:hidden">
             {megaNav.map((item) => (
-              <div key={item.label}>
+              <div key={item.label} className="border-b border-neutral-100 py-2">
                 <Link href={item.href} onClick={() => setOpen(false)} className="font-medium">
                   {item.label}
                 </Link>
@@ -121,18 +119,15 @@ export function SiteHeader() {
                     key={child.href + child.label}
                     href={child.href}
                     onClick={() => setOpen(false)}
-                    className="mt-1 block pl-3 text-neutral-600"
+                    className="mt-2 block pl-3 text-neutral-600"
                   >
                     {child.label}
                   </Link>
                 ))}
               </div>
             ))}
-            <Link href="/search" onClick={() => setOpen(false)}>
-              Search
-            </Link>
-            <Link href="/login" onClick={() => setOpen(false)}>
-              Log in
+            <Link href="/shop" onClick={() => setOpen(false)} className="py-2">
+              All products
             </Link>
           </nav>
         ) : null}
@@ -148,8 +143,9 @@ export function SiteFooter() {
         <div>
           <h3 className="text-sm font-medium">About Us</h3>
           <p className="mt-4 text-sm leading-6 text-neutral-600">
-            SKYDUST builds scent for homes, hotels, and workplaces: intelligent
-            diffusers, aroma oils, reeds, room sprays, and candles.
+            SKYDUST is a scenting house for homes, hotels, and workplaces.
+            Diffusers, aroma oils, reeds, sprays, and candles — one clean
+            catalog.
           </p>
         </div>
         <div>
@@ -249,24 +245,5 @@ export function SiteFooter() {
         © {new Date().getFullYear()} SKYDUST Pakistan.
       </p>
     </footer>
-  );
-}
-
-export function PageShell({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex min-h-full flex-1 flex-col bg-white text-neutral-900">
-      <SiteHeader />
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-14 md:px-8">
-        <h1 className="text-center text-3xl font-medium">{title}</h1>
-        <div className="mt-8 space-y-4 text-sm leading-7 text-neutral-600">{children}</div>
-      </main>
-      <SiteFooter />
-    </div>
   );
 }
