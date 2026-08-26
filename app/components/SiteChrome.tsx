@@ -12,7 +12,7 @@ export function SiteHeader() {
       <p className="bg-[#111] px-4 py-2 text-center text-[11px] tracking-[0.16em] text-white uppercase">
         Free shipping on auto-refill · SKYDUST
       </p>
-      <header className="flex items-center justify-between gap-4 border-b border-[#eee] px-4 py-3 sm:px-8">
+      <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-[#eee] px-4 py-4 sm:px-8">
         <nav className="hidden items-center gap-6 text-sm text-[#444] md:flex">
           <Link href="/shop" className="hover:text-[#111]">
             Shop
@@ -24,19 +24,22 @@ export function SiteHeader() {
             Subscribe
           </Link>
         </nav>
+        <div className="md:hidden" />
 
         <Link href="/" className="flex items-center justify-center">
           <Image
-            src="/skydust-logo.png"
+            src="/skydust-wordmark.png"
             alt="SKYDUST"
-            width={464}
-            height={295}
+            width={411}
+            height={70}
             priority
-            className="h-8 w-auto sm:h-10"
+            unoptimized
+            className="h-9 w-auto max-w-[200px] object-contain sm:h-11 sm:max-w-[240px]"
+            style={{ width: "auto", height: 44 }}
           />
         </Link>
 
-        <div className="flex items-center gap-4 text-sm">
+        <div className="flex items-center justify-end gap-4 text-sm">
           <Link href="/login" className="hidden text-[#444] hover:text-[#111] sm:inline">
             Log in
           </Link>
@@ -55,11 +58,13 @@ export function SiteFooter() {
       <div className="mx-auto flex max-w-6xl flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
         <Link href="/">
           <Image
-            src="/skydust-logo.png"
+            src="/skydust-wordmark.png"
             alt="SKYDUST"
-            width={464}
-            height={295}
-            className="h-8 w-auto"
+            width={411}
+            height={70}
+            unoptimized
+            className="h-9 w-auto object-contain"
+            style={{ width: "auto", height: 36 }}
           />
         </Link>
         <div className="grid grid-cols-2 gap-10 text-sm">
