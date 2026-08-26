@@ -79,7 +79,7 @@ export function GetStartedForm() {
         type="submit"
         className="w-full rounded-xl bg-[#1c2430] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#2c3848]"
       >
-        Create my Cloudust tenant
+        Create my SKYDUST workspace
       </button>
       <p className="text-center text-sm text-[#1c2430]/45">
         Already have access?{" "}

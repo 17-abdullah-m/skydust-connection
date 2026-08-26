@@ -33,8 +33,8 @@ export default async function ProductPage({
           />
         </div>
         <div className="flex flex-col justify-center">
-          <p className="text-xs tracking-[0.2em] text-[#888] uppercase">
-            SKYDUST · {product.category}
+          <p className="text-xs tracking-[0.2em] text-neutral-500 uppercase">
+            SKYDUST · {product.collection.replace("-", " ")}
           </p>
           <h1 className="mt-3 text-4xl font-semibold">{product.title}</h1>
           <p className="mt-4 text-xl">

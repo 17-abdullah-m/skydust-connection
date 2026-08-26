@@ -20,9 +20,9 @@ const display = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "SKYDUST — Automatic air fresheners",
+  title: "SKYDUST Pakistan | Scent Diffuser | Home Fragrance",
   description:
-    "SKYDUST automatic air freshener subscription. Shop diffusers and refills, or start a company workspace.",
+    "SKYDUST scent diffusers, aroma oils, reed diffusers, room sprays and candles. Clean fragrance for home and hospitality.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
