@@ -185,32 +185,7 @@ export const megaNav = [
   { label: "Book An Appointment", href: "/get-started" },
 ];
 
-export const countries = [
-  "UAE",
-  "QATAR",
-  "SAUDI ARABIA",
-  "OMAN",
-  "BAHRAIN",
-  "KUWAIT",
-  "UZBEKISTAN",
-  "SWITZERLAND",
-  "CANADA",
-  "KAZAKHSTAN",
-  "INDIA",
-  "TANZANIA",
-  "VIETNAM",
-  "UNITED STATES OF AMERICA",
-  "EGYPT",
-  "JORDAN",
-  "ITALY",
-  "IVORY COAST",
-  "IRAQ",
-  "IRAN",
-  "UK",
-  "PAKISTAN",
-  "FRANCE",
-  "MALDIVES",
-];
+export const countries = ["OMAN", "PAKISTAN"] as const;
 
 export function formatPrice(value: number) {
   return `Rs. ${value.toLocaleString("en-US")}.00`;

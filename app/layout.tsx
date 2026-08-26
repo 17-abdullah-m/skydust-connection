@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
+import { Cairo, Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "./components/CartProvider";
+import { LanguageProvider } from "./components/LanguageProvider";
+import { WhatsAppButton } from "./components/WhatsAppButton";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -11,6 +13,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const arabic = Cairo({
+  variable: "--font-cairo",
+  subsets: ["arabic", "latin"],
+  weight: ["400", "600", "700"],
 });
 
 const display = Cormorant_Garamond({
@@ -29,10 +37,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${display.variable} h-full scroll-smooth antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${display.variable} ${arabic.variable} h-full scroll-smooth antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-[#111]">
-        <CartProvider>{children}</CartProvider>
+        <LanguageProvider>
+          <CartProvider>
+            {children}
+            <WhatsAppButton />
+          </CartProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
