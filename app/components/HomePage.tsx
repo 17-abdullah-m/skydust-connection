@@ -115,7 +115,7 @@ export function HomePage() {
                 fill
                 priority
                 sizes="(min-width: 768px) 32rem, 90vw"
-                className="luxury-hero-bottle object-contain"
+                className="luxury-hero-bottle object-contain mix-blend-screen [mask-image:radial-gradient(ellipse_at_center,black_48%,transparent_80%)]"
               />
             </div>
           </div>

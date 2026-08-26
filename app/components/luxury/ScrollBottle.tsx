@@ -47,7 +47,7 @@ export function ScrollBottle() {
               alt=""
               fill
               sizes="24rem"
-              className="object-contain drop-shadow-[0_40px_70px_rgba(212,175,119,0.22)]"
+              className="object-contain mix-blend-screen [mask-image:radial-gradient(ellipse_at_center,black_48%,transparent_80%)] drop-shadow-[0_40px_70px_rgba(212,175,119,0.22)]"
             />
           </div>
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLang } from "../LanguageProvider";
 import { GoldAtmosphere } from "./GoldAtmosphere";
 
@@ -9,18 +9,17 @@ const STORAGE_KEY = "skydust-scent-experience";
 
 export function ScentExperienceIntro() {
   const { t } = useLang();
-  const [open, setOpen] = useState(true);
+  const [show, setShow] = useState(false);
   const [leaving, setLeaving] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce || sessionStorage.getItem(STORAGE_KEY) === "1") {
-      setOpen(false);
-    }
+    const seen = sessionStorage.getItem(STORAGE_KEY) === "1";
+    if (!reduce && !seen) setShow(true);
   }, []);
 
   useEffect(() => {
-    if (!open) return;
+    if (!show) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (event: KeyboardEvent) => {
@@ -31,21 +30,15 @@ export function ScentExperienceIntro() {
       document.body.style.overflow = previous;
       window.removeEventListener("keydown", onKey);
     };
-
-    function close() {
-      sessionStorage.setItem(STORAGE_KEY, "1");
-      setLeaving(true);
-      window.setTimeout(() => setOpen(false), 560);
-    }
-  }, [open]);
+  }, [show]);
 
   const close = () => {
     sessionStorage.setItem(STORAGE_KEY, "1");
     setLeaving(true);
-    window.setTimeout(() => setOpen(false), 700);
+    window.setTimeout(() => setShow(false), 700);
   };
 
-  if (!open) return null;
+  if (!show) return null;
 
   return (
     <div
@@ -76,7 +69,7 @@ export function ScentExperienceIntro() {
             fill
             priority
             sizes="(min-width: 768px) 28rem, 90vw"
-            className="object-contain drop-shadow-[0_30px_80px_rgba(212,175,119,0.28)]"
+            className="object-contain mix-blend-screen [mask-image:radial-gradient(ellipse_at_center,black_46%,transparent_78%)]"
           />
         </div>
 
