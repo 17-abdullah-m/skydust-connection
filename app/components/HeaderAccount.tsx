@@ -12,10 +12,12 @@ type SessionUser = {
   role: string;
 };
 
-export function HeaderAccount() {
+export function HeaderAccount({ layout = "bar" }: { layout?: "bar" | "menu" }) {
   const { t } = useLang();
   const router = useRouter();
   const [user, setUser] = useState<SessionUser | null | undefined>(undefined);
+  const itemClass =
+    layout === "menu" ? "block py-1 hover:opacity-60" : "hidden hover:opacity-60 sm:inline";
 
   useEffect(() => {
     let cancelled = false;
@@ -40,16 +42,16 @@ export function HeaderAccount() {
   }
 
   if (user === undefined) {
-    return <span className="hidden w-16 sm:inline" />;
+    return layout === "bar" ? <span className="hidden w-16 sm:inline" /> : null;
   }
 
   if (!user) {
     return (
       <>
-        <Link href="/login" className="hidden hover:opacity-60 sm:inline">
+        <Link href="/login" className={itemClass}>
           {t.login}
         </Link>
-        <Link href="/signup" className="hidden hover:opacity-60 sm:inline">
+        <Link href="/signup" className={itemClass}>
           {t.signup}
         </Link>
       </>
@@ -58,10 +60,10 @@ export function HeaderAccount() {
 
   return (
     <>
-      <Link href="/dashboard" className="hidden hover:opacity-60 sm:inline">
+      <Link href="/dashboard" className={itemClass}>
         {t.dashboard}
       </Link>
-      <button type="button" onClick={logout} className="hidden hover:opacity-60 sm:inline">
+      <button type="button" onClick={logout} className={itemClass}>
         {t.logout}
       </button>
     </>

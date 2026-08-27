@@ -5,6 +5,7 @@ import { requireAdmin, requireTenant } from "@/lib/auth/session";
 import { publicError } from "@/lib/auth/crypto";
 import { inviteSchema } from "@/lib/validations";
 import { randomBytes } from "crypto";
+import { revalidatePath } from "next/cache";
 
 export type TeamState = { error?: string; inviteUrl?: string };
 
@@ -49,29 +50,27 @@ export async function createInviteAction(
 
   const origin = process.env.APP_URL?.replace(/\/$/, "") || "";
   const path = `/signup?invite=${token}`;
+  revalidatePath("/dashboard/team");
   return { inviteUrl: origin ? `${origin}${path}` : path };
 }
 
-export async function removeMemberAction(formData: FormData): Promise<TeamState> {
+export async function removeMemberAction(formData: FormData): Promise<void> {
   const admin = await requireAdmin();
   const membershipId = String(formData.get("membershipId") || "");
-  if (!membershipId) return publicError("Missing member.");
+  if (!membershipId) return;
 
   const membership = await prisma.membership.findFirst({
     where: { id: membershipId, companyId: admin.companyId },
   });
-  if (!membership) return publicError("Member not found.");
-  if (membership.userId === admin.userId) {
-    return publicError("You cannot remove yourself.");
-  }
+  if (!membership) return;
+  if (membership.userId === admin.userId) return;
 
   await prisma.$transaction([
     prisma.session.deleteMany({ where: { userId: membership.userId } }),
     prisma.membership.delete({ where: { id: membership.id } }),
     prisma.user.delete({ where: { id: membership.userId } }),
   ]);
-
-  return {};
+  revalidatePath("/dashboard/team");
 }
 
 export async function listTeam() {

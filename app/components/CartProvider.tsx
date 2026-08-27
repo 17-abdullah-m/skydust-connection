@@ -16,6 +16,7 @@ type CartContextValue = {
   total: number;
   add: (line: Omit<CartLine, "qty">) => void;
   remove: (slug: string) => void;
+  clear: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -42,6 +43,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         });
       },
       remove: (slug) => setLines((current) => current.filter((item) => item.slug !== slug)),
+      clear: () => setLines([]),
     };
   }, [lines]);
 

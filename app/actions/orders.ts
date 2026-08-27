@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { requireTenant } from "@/lib/auth/session";
+import { getTenantContext, requireTenant } from "@/lib/auth/session";
 import { publicError } from "@/lib/auth/crypto";
 import { checkoutSchema } from "@/lib/validations";
 import { getProduct } from "@/lib/products";
@@ -11,7 +11,10 @@ export type OrderState = { error?: string; orderId?: string };
 export async function placeOrderAction(
   items: { slug: string; qty: number }[],
 ): Promise<OrderState> {
-  const tenant = await requireTenant();
+  const tenant = await getTenantContext();
+  if (!tenant) {
+    return publicError("Sign in to place an order.");
+  }
   const parsed = checkoutSchema.safeParse({ items });
   if (!parsed.success) {
     return publicError(parsed.error.issues[0]?.message ?? "Cart is invalid.");

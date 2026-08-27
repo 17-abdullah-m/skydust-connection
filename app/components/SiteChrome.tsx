@@ -12,6 +12,7 @@ import { useCart } from "./CartProvider";
 
 import { useLang } from "./LanguageProvider";
 
+import { HeaderAccount } from "./HeaderAccount";
 import { megaNav } from "@/lib/products";
 
 
@@ -248,12 +249,7 @@ export function SiteHeader() {
 
             </Link>
 
-            <Link href="/login" className="hidden hover:opacity-60 sm:inline">
-
-              {t.login}
-
-            </Link>
-
+            <HeaderAccount />
             <Link href="/cart">
 
               {t.cart} ({count})
@@ -317,10 +313,11 @@ export function SiteHeader() {
             ))}
 
             <Link href="/shop" onClick={() => setOpen(false)} className="py-2">
-
               {t.allProducts}
-
             </Link>
+            <div className="flex flex-col gap-2 py-2">
+              <HeaderAccount layout="menu" />
+            </div>
 
           </nav>
 

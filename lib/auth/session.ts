@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import {
   createSessionToken,
@@ -99,18 +100,12 @@ export async function getTenantContext(): Promise<TenantContext | null> {
 
 export async function requireTenant(): Promise<TenantContext> {
   const ctx = await getTenantContext();
-  if (!ctx) {
-    const { redirect } = await import("next/navigation");
-    redirect("/login");
-  }
+  if (!ctx) redirect("/login");
   return ctx;
 }
 
 export async function requireAdmin(): Promise<TenantContext> {
   const ctx = await requireTenant();
-  if (ctx.role !== "ADMIN") {
-    const { redirect } = await import("next/navigation");
-    redirect("/dashboard");
-  }
+  if (ctx.role !== "ADMIN") redirect("/dashboard");
   return ctx;
 }

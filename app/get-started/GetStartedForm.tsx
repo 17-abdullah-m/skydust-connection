@@ -1,34 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useActionState } from "react";
+import { createAppointmentAction, type AppointmentState } from "@/app/actions/appointments";
+
+const initial: AppointmentState = {};
 
 export function GetStartedForm() {
-  const [submitted, setSubmitted] = useState(false);
+  const [state, action, pending] = useActionState(createAppointmentAction, initial);
 
-  if (submitted) {
+  if (state.ok) {
     return (
-      <div className="mt-10 rounded-2xl border border-[#7eb89a]/40 bg-[#f3faf6] p-6 text-center">
-        <p className="font-display text-2xl font-semibold">Tenant queued</p>
-        <p className="mt-3 text-sm leading-6 text-[#1c2430]/65">
-          Your request is in. Next, log in with Google, Facebook, or your phone
-          number.
+      <div className="mt-10 border border-neutral-200 p-6 text-center">
+        <p className="text-xl font-medium">Request received</p>
+        <p className="mt-3 text-sm leading-6 text-neutral-600">
+          A SKYDUST specialist will follow up. If you have a company account, this also
+          appears on your dashboard.
         </p>
-        <Link href="/login" className="mt-6 inline-flex text-sm font-medium text-[#7eb89a]">
-          Go to login →
+        <Link href="/dashboard" className="mt-6 inline-flex text-sm underline underline-offset-4">
+          Go to dashboard
         </Link>
       </div>
     );
   }
 
   return (
-    <form
-      className="mt-10 space-y-5"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setSubmitted(true);
-      }}
-    >
+    <form action={action} className="mt-10 space-y-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Full name" id="name" type="text" autoComplete="name" />
         <Field
@@ -40,48 +37,40 @@ export function GetStartedForm() {
         />
       </div>
       <Field
-        label="Company name (tenant ID)"
-        id="company"
+        label="Company or space name"
+        id="companyName"
         type="text"
         autoComplete="organization"
         placeholder="Your company"
       />
       <div>
-        <p className="text-xs tracking-[0.18em] uppercase text-[#1c2430]/45">
-          Your seat
-        </p>
-        <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#1c2430]/10 bg-white p-4 has-[:checked]:border-[#7eb89a]">
-            <input type="radio" name="seat" value="admin" defaultChecked className="mt-1" />
-            <span>
-              <span className="block text-sm font-medium">Admin</span>
-              <span className="mt-1 block text-xs text-[#1c2430]/50">
-                I own the company tenant and invite managers.
-              </span>
-            </span>
-          </label>
-          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#1c2430]/10 bg-white p-4 has-[:checked]:border-[#7eb89a]">
-            <input type="radio" name="seat" value="manager" className="mt-1" />
-            <span>
-              <span className="block text-sm font-medium">Manager</span>
-              <span className="mt-1 block text-xs text-[#1c2430]/50">
-                I was invited — I need Manager access.
-              </span>
-            </span>
-          </label>
-        </div>
+        <label htmlFor="notes" className="text-xs tracking-[0.18em] text-neutral-500 uppercase">
+          Notes
+        </label>
+        <textarea
+          id="notes"
+          name="notes"
+          rows={4}
+          className="mt-2 w-full border border-neutral-300 px-3 py-3 text-sm outline-none focus:border-black"
+          placeholder="Rooms, hotels, cars — whatever we should scent."
+        />
       </div>
-      <Field label="Password" id="password" type="password" autoComplete="new-password" />
+      {state.error ? (
+        <p className="text-sm text-red-600" role="alert">
+          {state.error}
+        </p>
+      ) : null}
       <button
         type="submit"
-        className="w-full rounded-xl bg-[#1c2430] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#2c3848]"
+        disabled={pending}
+        className="w-full bg-black px-4 py-3 text-sm font-medium text-white disabled:opacity-50"
       >
-        Create my SKYDUST workspace
+        {pending ? "Sending…" : "Request an appointment"}
       </button>
-      <p className="text-center text-sm text-[#1c2430]/45">
-        Already have access?{" "}
-        <Link href="/login" className="text-[#7eb89a] hover:underline">
-          Log in
+      <p className="text-center text-sm text-neutral-500">
+        Want a company workspace?{" "}
+        <Link href="/signup" className="underline underline-offset-4">
+          Sign up
         </Link>
       </p>
     </form>
@@ -103,7 +92,7 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="text-xs tracking-[0.18em] uppercase text-[#1c2430]/45">
+      <label htmlFor={id} className="text-xs tracking-[0.18em] text-neutral-500 uppercase">
         {label}
       </label>
       <input
@@ -113,7 +102,7 @@ function Field({
         required
         autoComplete={autoComplete}
         placeholder={placeholder}
-        className="mt-2 w-full rounded-xl border border-[#1c2430]/12 bg-white px-4 py-3 text-sm text-[#1c2430] outline-none ring-[#7eb89a]/40 placeholder:text-[#1c2430]/30 focus:ring-2"
+        className="mt-2 w-full border border-neutral-300 px-3 py-3 text-sm outline-none focus:border-black"
       />
     </div>
   );

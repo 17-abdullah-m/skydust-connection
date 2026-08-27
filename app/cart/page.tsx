@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { useCart } from "../components/CartProvider";
+import { CheckoutButton } from "../components/CheckoutButton";
 import { PriceDisplay } from "../components/PriceDisplay";
 
 export default function CartPage() {
@@ -55,12 +56,7 @@ export default function CartPage() {
               <span>Subtotal</span>
               <PriceDisplay amount={total} align="start" />
             </div>
-            <Link
-              href="/get-started"
-              className="mt-6 flex w-full items-center justify-center rounded-full bg-[#111] px-4 py-3 text-sm font-medium text-white hover:bg-[#333]"
-            >
-              Checkout
-            </Link>
+            <CheckoutButton />
           </div>
         ) : null}
       </main>
