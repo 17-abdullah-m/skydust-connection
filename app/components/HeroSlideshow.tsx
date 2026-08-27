@@ -6,13 +6,13 @@ import Link from "next/link";
 const slides = [
   {
     src: "/slides/slide-mino-skydust.png",
-    href: "/products/desk-mino",
-    alt: "SKYDUST MINO desktop diffuser",
+    href: "/products/diffuser-midnight-oud",
+    alt: "SKYDUST Midnight Oud diffuser",
   },
   {
     src: "/slides/slide-trio-skydust.png",
-    href: "/products/scent-trio",
-    alt: "SKYDUST Scent Trio",
+    href: "/products/diffuser-velvet-rose",
+    alt: "SKYDUST Velvet Rose set",
   },
   {
     src: "/slides/slide-lobby-skydust.png",

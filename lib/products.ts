@@ -24,6 +24,35 @@ const img = {
   candle: "/products/product-scented-candle.png",
 };
 
+const diffuserPhotos = [img.mini, img.euca, img.citrus, img.night, img.lobby, img.kit];
+
+const scents = [
+  ["midnight-oud", "Midnight Oud", "Deep oud for quiet evening rooms."],
+  ["velvet-rose", "Velvet Rose", "Soft rose that lingers without shouting."],
+  ["white-musk", "White Musk", "Clean musk for airy, open spaces."],
+  ["arabian-amber", "Arabian Amber", "Warm amber with a golden trail."],
+  ["desert-sage", "Desert Sage", "Dry herbs and cool air."],
+  ["royal-saffron", "Royal Saffron", "Saffron spice over smooth woods."],
+  ["ocean-linen", "Ocean Linen", "Fresh linen with a light sea breeze."],
+  ["black-tea", "Black Tea", "Steeped tea and soft smoke."],
+  ["golden-amber", "Golden Amber", "Honeyed amber for lobbies and halls."],
+  ["silk-peony", "Silk Peony", "Powdery peony for bedrooms."],
+  ["cedar-mist", "Cedar Mist", "Cedarwood with a cool mist finish."],
+  ["night-jasmine", "Night Jasmine", "Night-blooming jasmine, low and elegant."],
+  ["fresh-bergamot", "Fresh Bergamot", "Bright citrus for daytime rooms."],
+  ["sandalwood-glow", "Sandalwood Glow", "Creamy sandalwood that stays close."],
+  ["vanilla-smoke", "Vanilla Smoke", "Warm vanilla with a thin incense line."],
+  ["fig-orchard", "Fig Orchard", "Green fig and sun-warmed leaves."],
+  ["lemon-verbena", "Lemon Verbena", "Sharp lemon and garden herbs."],
+  ["rosewood", "Rosewood", "Polished woods with a quiet floral edge."],
+  ["incense-noir", "Incense Noir", "Dark incense for evenings and cars."],
+  ["honey-tobacco", "Honey Tobacco", "Sweet tobacco leaf, never heavy."],
+  ["white-tea", "White Tea", "Pale tea and clean air."],
+  ["pink-pepper", "Pink Pepper", "Pepper sparkle over soft musk."],
+  ["orange-blossom", "Orange Blossom", "Neroli brightness for washrooms and foyers."],
+  ["rain-vetiver", "Rain Vetiver", "Wet earth and vetiver after rain."],
+] as const;
+
 function item(
   slug: string,
   title: string,
@@ -37,54 +66,88 @@ function item(
   return { slug, title, price, image, collection, tags, blurb, compareAt };
 }
 
+function line(
+  prefix: string,
+  titleOf: (name: string) => string,
+  collection: string,
+  tags: string[],
+  photos: string[],
+  basePrice: number,
+  step: number,
+  extra: string,
+): Product[] {
+  return scents.map(([slug, name, note], index) =>
+    item(
+      `${prefix}-${slug}`,
+      titleOf(name),
+      basePrice + index * step,
+      photos[index % photos.length],
+      collection,
+      tags,
+      `${note} ${extra}`,
+    ),
+  );
+}
+
 export const products: Product[] = [
-  item("desk-mino", "Desk MINO Diffuser with 20ml Oil", 9900, img.mini, "diffusers", ["diffusers", "bundles"], "Compact desktop scent diffuser with a 20ml oil vial."),
-  item("airmax-novo", "SKYDUST Airmax Novo Diffuser", 25371, img.euca, "diffusers", ["diffusers"], "Cold-air scent diffuser for homes and small offices."),
-  item("airmax-plus", "SKYDUST Airmax Plus Machine", 27058, img.citrus, "diffusers", ["diffusers"], "Next-size automatic diffuser for open rooms."),
-  item("scent-splash", "Scent Splash Diffuser Machine", 29812, img.night, "diffusers", ["diffusers", "bundles"], "Timed mist diffuser with a soft status glow."),
-  item("sensei-plugin", "Sensei Aero Plug-in Diffuser", 18612, img.night, "diffusers", ["diffusers", "bundles"], "Wall plug-in diffuser for powder rooms and corridors."),
-  item("car-diffuser", "Car Scent Diffuser (cartridge sold separate)", 12223, img.mini, "car-diffusers", ["diffusers", "car-diffusers", "bundles"], "Clip-in car diffuser. Pair with SKYDUST car cartridges."),
-  item("ecoscent-smart", "Ecoscent Smart Scent Diffuser", 54965, img.lobby, "diffusers", ["diffusers", "bundles"], "App-ready unit for lobbies and larger rooms."),
-  item("scent-trio", "Scent Trio Smart Diffusers for Home", 79499, img.kit, "bundles", ["diffusers", "bundles"], "Three-scent home set: machine plus two oils.", 89000),
-  item("scent-pro-stand", "Scent Pro Stand", 13259, img.lobby, "diffusers", ["diffusers"], "Floor stand for SKYDUST commercial machines."),
-  item("scent-box", "Scent Box Diffuser Machine", 116655, img.lobby, "diffusers", ["diffusers"], "Enclosed commercial box for mid-size venues."),
-  item("hvac-scent", "HVAC Scent Machine for Large Spaces", 139986, img.lobby, "diffusers", ["diffusers"], "Ducted scenting for hotels, malls, and offices."),
-  item("scentpro", "Scentpro Commercial Diffuser", 184357, img.lobby, "diffusers", ["diffusers"], "Flagship commercial machine for high-traffic floors."),
-  item("airslim", "Airslim HVAC Diffuser", 202970, img.lobby, "diffusers", ["diffusers"], "Slim-profile HVAC diffuser for large commercial sites."),
-
-  item("oil-aloe-green-tea", "Aloe Green Tea Oil 500ml", 5816, img.oil, "aroma-oils", ["aroma-oils", "hotel-oils"], "Green tea and aloe oil for electronic scent machines."),
-  item("oil-bakarat", "Bakarat Oil 500ml", 7567, img.oil, "aroma-oils", ["aroma-oils", "hotel-oils"], "Warm amber oil used in hotel lobbies."),
-  item("oil-bright", "Bright Oil 500ml", 6086, img.oil, "aroma-oils", ["aroma-oils"], "Citrus-forward oil for daytime spaces."),
-  item("oil-cool-gentry", "Cool Gentry Oil 500ml", 6908, img.oil, "aroma-oils", ["aroma-oils", "hotel-oils"], "Clean musk and tea accord for offices."),
-  item("oil-frangipani", "Elegant Frangipani Oil 500ml", 3502, img.oil, "aroma-oils", ["aroma-oils"], "Soft floral oil for suites and spas."),
-  item("oil-aquatic", "Aquatic Breeze Oil 500ml", 5816, img.oil, "aroma-oils", ["aroma-oils", "hotel-oils"], "Marine freshness for washrooms and gyms."),
-  item("oil-neutral-air", "Neutral Air Oil 500ml", 5400, img.oil, "aroma-oils", ["aroma-oils", "hotel-oils"], "Odor-neutralizing base oil."),
-  item("oil-mocca", "Mocca Oil 500ml", 7200, img.oil, "aroma-oils", ["aroma-oils"], "Coffee-cocoa oil for cafés and lounges."),
-  item("oil-black-jasmine", "Black Jasmine Oil 500ml", 7800, img.oil, "aroma-oils", ["aroma-oils", "hotel-oils"], "Night floral for evening scenting."),
-  item("oil-linen", "Linen Air Cartridge", 3502, img.linen, "mino-oils", ["aroma-oils", "mino-oils"], "Snap-in cartridge for Desk MINO units."),
-  item("oil-mino-citrus", "MINO Citrus Oil 20ml", 1900, img.linen, "mino-oils", ["aroma-oils", "mino-oils"], "Small-format citrus oil for desktop machines."),
-  item("oil-mino-tea", "MINO Green Tea Oil 20ml", 1900, img.linen, "mino-oils", ["aroma-oils", "mino-oils"], "Small-format tea oil for desktop machines."),
-  item("car-cartridge-citrus", "Car Cartridge — Citrus", 2800, img.linen, "car-cartridges", ["aroma-oils", "car-cartridges"], "Replacement cartridge for SKYDUST car diffusers."),
-  item("car-cartridge-oud", "Car Cartridge — Oud", 3200, img.linen, "car-cartridges", ["aroma-oils", "car-cartridges"], "Oud cartridge for SKYDUST car diffusers."),
-  item("seasonal-oil-trio", "Seasonal Oil Trio", 12400, img.trio, "aroma-oils", ["aroma-oils", "bundles"], "Mint, citrus, and blush oils for 90 days."),
-
-  item("reeds-premium-150", "Premium Reeds 150ml", 4200, img.reeds, "premium-reeds", ["reeds", "premium-reeds"], "Small reed bottle for desks and powder rooms."),
-  item("reeds-premium-250", "Premium Reeds 250ml", 5600, img.reeds, "premium-reeds", ["reeds", "premium-reeds"], "Mid reed bottle for living rooms."),
-  item("reeds-luxury-500", "Luxury Reeds 500ml", 8900, img.reeds, "luxury-reeds-500", ["reeds", "luxury-reeds-500"], "Hotel-size reed diffuser."),
-  item("reeds-luxury-1000", "Luxury Reeds 1000ml", 14900, img.reeds, "luxury-reeds-1000", ["reeds", "luxury-reeds-1000"], "Statement reed for lobbies."),
-  item("reeds-luxury-2800", "Luxury Reeds 2800ml", 28900, img.reeds, "luxury-reeds-2800", ["reeds", "luxury-reeds-2800"], "Extra-large reed vessel for commercial floors."),
-  item("reeds-premium-refill", "Premium Reeds Refill 500ml", 3900, img.oil, "premium-reeds-refill", ["reeds", "premium-reeds-refill"], "Refill oil for premium reed bottles."),
-  item("reeds-luxury-refill", "Luxury Reeds Refill 1000ml", 7200, img.oil, "luxury-reeds-refill", ["reeds", "luxury-reeds-refill"], "Refill oil for luxury reed vessels."),
-
-  item("spray-premium-500", "Premium Room Spray 500ml", 6100, img.spray, "premium-spray", ["room-spray", "premium-spray"], "Daily room spray in the SKYDUST scent family."),
-  item("spray-luxury-500", "Luxury Room Spray 500ml", 7800, img.spray, "luxury-spray", ["room-spray", "luxury-spray"], "Longer-hold spray for suites and events."),
-
-  item("candle-linen", "Scented Candle — Linen", 4200, img.candle, "candles", ["candles"], "Ceramic linen candle, clean burn."),
-  item("candle-oud", "Scented Candle — Oud", 4800, img.candle, "candles", ["candles"], "Warm oud candle for evenings."),
-  item("candle-citrus", "Scented Candle — Citrus", 4200, img.candle, "candles", ["candles"], "Bright citrus candle for daytime rooms."),
-  item("candle-jasmine", "Scented Candle — Jasmine", 4500, img.candle, "candles", ["candles"], "Soft jasmine candle for bedrooms."),
-
-  item("sample-set", "Scent Sample Set (6 vials)", 2500, img.trio, "samples", ["aroma-oils", "samples"], "Six 5ml vials to choose a signature scent."),
+  ...line(
+    "diffuser",
+    (name) => `${name} Diffuser`,
+    "diffusers",
+    ["diffusers", "car-diffusers", "bundles"],
+    diffuserPhotos,
+    11800,
+    920,
+    "Automatic air freshener for home, office, and hotel rooms.",
+  ),
+  ...line(
+    "oil",
+    (name) => `${name} Oil`,
+    "aroma-oils",
+    ["aroma-oils", "hotel-oils", "mino-oils", "car-cartridges", "samples"],
+    [img.oil, img.linen, img.trio],
+    2100,
+    185,
+    "Oil refill for electronic scent machines.",
+  ),
+  ...line(
+    "reeds",
+    (name) => `${name} Reeds`,
+    "reeds",
+    [
+      "reeds",
+      "premium-reeds",
+      "luxury-reeds-500",
+      "luxury-reeds-1000",
+      "luxury-reeds-2800",
+      "premium-reeds-refill",
+      "luxury-reeds-refill",
+    ],
+    [img.reeds],
+    3900,
+    410,
+    "Reed diffuser for living rooms, suites, and desks.",
+  ),
+  ...line(
+    "candle",
+    (name) => `${name} Candle`,
+    "candles",
+    ["candles"],
+    [img.candle],
+    3600,
+    95,
+    "Scented candle with a slow, even burn.",
+  ),
+  ...line(
+    "spray",
+    (name) => `${name} Room Spray`,
+    "room-spray",
+    ["room-spray", "premium-spray", "luxury-spray"],
+    [img.spray],
+    4800,
+    140,
+    "Room spray for a quick lift in any space.",
+  ),
 ];
 
 export type Collection = {
