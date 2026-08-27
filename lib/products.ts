@@ -9,23 +9,6 @@ export type Product = {
   blurb: string;
 };
 
-const img = {
-  mini: "/products/product-mini-desk.png",
-  euca: "/products/product-eucalyptus-diffuser.png",
-  citrus: "/products/product-citrus-diffuser.png",
-  night: "/products/product-night-bloom.png",
-  lobby: "/products/product-lobby-pro.png",
-  kit: "/products/product-starter-kit.png",
-  oil: "/products/product-aroma-oil.png",
-  trio: "/products/product-refill-trio.png",
-  linen: "/products/product-linen-cartridge.png",
-  reeds: "/products/product-luxury-reeds.png",
-  spray: "/products/product-room-spray.png",
-  candle: "/products/product-scented-candle.png",
-};
-
-const diffuserPhotos = [img.mini, img.euca, img.citrus, img.night, img.lobby, img.kit];
-
 const scents = [
   ["midnight-oud", "Midnight Oud", "Deep oud for quiet evening rooms."],
   ["velvet-rose", "Velvet Rose", "Soft rose that lingers without shouting."],
@@ -66,12 +49,16 @@ function item(
   return { slug, title, price, image, collection, tags, blurb, compareAt };
 }
 
+function scentPhoto(kind: "bottle" | "diffuser", slug: string) {
+  return `/products/scents/${kind}-${slug}.png`;
+}
+
 function line(
   prefix: string,
   titleOf: (name: string) => string,
   collection: string,
   tags: string[],
-  photos: string[],
+  kind: "bottle" | "diffuser",
   basePrice: number,
   step: number,
   extra: string,
@@ -81,7 +68,7 @@ function line(
       `${prefix}-${slug}`,
       titleOf(name),
       basePrice + index * step,
-      photos[index % photos.length],
+      scentPhoto(kind, slug),
       collection,
       tags,
       `${note} ${extra}`,
@@ -95,7 +82,7 @@ export const products: Product[] = [
     (name) => `${name} Diffuser`,
     "diffusers",
     ["diffusers", "car-diffusers", "bundles"],
-    diffuserPhotos,
+    "diffuser",
     11800,
     920,
     "Automatic air freshener for home, office, and hotel rooms.",
@@ -105,7 +92,7 @@ export const products: Product[] = [
     (name) => `${name} Oil`,
     "aroma-oils",
     ["aroma-oils", "hotel-oils", "mino-oils", "car-cartridges", "samples"],
-    [img.oil, img.linen, img.trio],
+    "bottle",
     2100,
     185,
     "Oil refill for electronic scent machines.",
@@ -123,7 +110,7 @@ export const products: Product[] = [
       "premium-reeds-refill",
       "luxury-reeds-refill",
     ],
-    [img.reeds],
+    "bottle",
     3900,
     410,
     "Reed diffuser for living rooms, suites, and desks.",
@@ -133,7 +120,7 @@ export const products: Product[] = [
     (name) => `${name} Candle`,
     "candles",
     ["candles"],
-    [img.candle],
+    "bottle",
     3600,
     95,
     "Scented candle with a slow, even burn.",
@@ -143,7 +130,7 @@ export const products: Product[] = [
     (name) => `${name} Room Spray`,
     "room-spray",
     ["room-spray", "premium-spray", "luxury-spray"],
-    [img.spray],
+    "bottle",
     4800,
     140,
     "Room spray for a quick lift in any space.",
