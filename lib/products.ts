@@ -187,8 +187,22 @@ export const megaNav = [
 
 export const countries = ["OMAN", "PAKISTAN"] as const;
 
+/** 1 OMR ≈ 720 PKR — used to show Oman prices alongside PKR. */
+export const PKR_PER_OMR = 720;
+
+export function pkrToOmr(pkr: number) {
+  return pkr / PKR_PER_OMR;
+}
+
 export function formatPrice(value: number) {
   return `Rs. ${value.toLocaleString("en-US")}.00`;
+}
+
+export function formatOmr(pkr: number) {
+  return `OMR ${pkrToOmr(pkr).toLocaleString("en-US", {
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3,
+  })}`;
 }
 
 export function getProduct(slug: string) {

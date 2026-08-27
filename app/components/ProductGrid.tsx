@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { formatPrice, type Product } from "@/lib/products";
+import { PriceDisplay } from "./PriceDisplay";
+import { type Product } from "@/lib/products";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
@@ -12,22 +13,13 @@ export function ProductCard({ product }: { product: Product }) {
             alt={product.title}
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition duration-300 group-hover:scale-[1.03]"
+            className="object-cover transition duration-700 ease-out group-hover:scale-110"
           />
         </div>
         <h3 className="mt-3 text-center text-sm font-medium">{product.title}</h3>
-        <p className="mt-1 text-center text-sm text-neutral-700">
-          {product.compareAt ? (
-            <>
-              <span className="mr-2 text-neutral-400 line-through">
-                {formatPrice(product.compareAt)}
-              </span>
-              {formatPrice(product.price)}
-            </>
-          ) : (
-            formatPrice(product.price)
-          )}
-        </p>
+        <div className="mt-1">
+          <PriceDisplay amount={product.price} compareAt={product.compareAt} />
+        </div>
       </Link>
     </article>
   );

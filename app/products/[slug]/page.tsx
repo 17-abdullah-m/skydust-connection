@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "../../components/AddToCartButton";
 import { SiteFooter, SiteHeader } from "../../components/SiteChrome";
-import { formatPrice, getProduct, products } from "@/lib/products";
+import { PriceDisplay } from "../../components/PriceDisplay";
+import { getProduct, products } from "@/lib/products";
 
 export function generateStaticParams() {
   return products.map((product) => ({ slug: product.slug }));
@@ -37,18 +38,14 @@ export default async function ProductPage({
             SKYDUST · {product.collection.replace("-", " ")}
           </p>
           <h1 className="mt-3 text-4xl font-semibold">{product.title}</h1>
-          <p className="mt-4 text-xl">
-            {product.compareAt ? (
-              <>
-                <span className="mr-2 text-[#999] line-through">
-                  {formatPrice(product.compareAt)}
-                </span>
-                {formatPrice(product.price)}
-              </>
-            ) : (
-              formatPrice(product.price)
-            )}
-          </p>
+          <div className="mt-4">
+            <PriceDisplay
+              amount={product.price}
+              compareAt={product.compareAt}
+              align="start"
+              size="lg"
+            />
+          </div>
           <p className="mt-5 max-w-md text-sm leading-6 text-[#555]">{product.blurb}</p>
           <div className="mt-8 max-w-sm">
             <AddToCartButton

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { useCart } from "../components/CartProvider";
-import { formatPrice } from "@/lib/products";
+import { PriceDisplay } from "../components/PriceDisplay";
 
 export default function CartPage() {
   const { lines, total, remove } = useCart();
@@ -31,9 +31,10 @@ export default function CartPage() {
                 <div className="flex flex-1 items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-medium">{line.title}</p>
-                    <p className="mt-1 text-sm text-[#666]">
-                      Qty {line.qty} · {formatPrice(line.price)}
-                    </p>
+                    <p className="mt-1 text-sm text-[#666]">Qty {line.qty}</p>
+                    <div className="mt-1">
+                      <PriceDisplay amount={line.price} align="start" />
+                    </div>
                     <button
                       type="button"
                       onClick={() => remove(line.slug)}
@@ -42,7 +43,7 @@ export default function CartPage() {
                       Remove
                     </button>
                   </div>
-                  <p className="text-sm">{formatPrice(line.price * line.qty)}</p>
+                  <PriceDisplay amount={line.price * line.qty} align="start" />
                 </div>
               </li>
             ))}
@@ -50,10 +51,10 @@ export default function CartPage() {
         )}
         {lines.length > 0 ? (
           <div className="mt-8 border-t border-[#eee] pt-6">
-            <p className="flex justify-between text-sm">
+            <div className="flex items-start justify-between gap-4 text-sm">
               <span>Subtotal</span>
-              <span>{formatPrice(total)}</span>
-            </p>
+              <PriceDisplay amount={total} align="start" />
+            </div>
             <Link
               href="/get-started"
               className="mt-6 flex w-full items-center justify-center rounded-full bg-[#111] px-4 py-3 text-sm font-medium text-white hover:bg-[#333]"
