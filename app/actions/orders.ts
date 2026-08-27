@@ -26,6 +26,12 @@ export async function placeOrderAction(
     if (!product) {
       return publicError("A product in your cart is no longer available.");
     }
+    if (product.stock <= 0) {
+      return publicError(`${product.title} is out of stock.`);
+    }
+    if (item.qty > product.stock) {
+      return publicError(`Only ${product.stock} of ${product.title} left in stock.`);
+    }
     lines.push({
       productSlug: product.slug,
       title: product.title,

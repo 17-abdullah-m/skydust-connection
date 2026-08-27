@@ -1,5 +1,6 @@
 "use client";
 
+import { getProduct } from "@/lib/products";
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 
 export type CartLine = {
@@ -33,10 +34,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       total,
       add: (line) => {
         setLines((current) => {
+          const max = getProduct(line.slug)?.stock ?? 0;
+          if (max <= 0) return current;
           const existing = current.find((item) => item.slug === line.slug);
           if (existing) {
+            if (existing.qty >= max) return current;
             return current.map((item) =>
-              item.slug === line.slug ? { ...item, qty: item.qty + 1 } : item,
+              item.slug === line.slug ? { ...item, qty: Math.min(item.qty + 1, max) } : item,
             );
           }
           return [...current, { ...line, qty: 1 }];

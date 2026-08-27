@@ -16,7 +16,7 @@ const slides = [
   },
   {
     src: "/slides/slide-lobby-skydust.png",
-    href: "/collections/diffusers",
+    href: "/collections/room-diffusers",
     alt: "SKYDUST commercial diffuser",
   },
   {
@@ -26,7 +26,7 @@ const slides = [
   },
   {
     src: "/slides/slide-oils-skydust.png",
-    href: "/collections/aroma-oils",
+    href: "/collections/aroma-oils-diffusers",
     alt: "SKYDUST aroma oils",
   },
 ];

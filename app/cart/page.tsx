@@ -26,8 +26,8 @@ export default function CartPage() {
           <ul className="mt-8 divide-y divide-[#eee]">
             {lines.map((line) => (
               <li key={line.slug} className="flex gap-4 py-5">
-                <div className="relative h-24 w-24 shrink-0 bg-[#f3f3f3]">
-                  <Image src={line.image} alt={line.title} fill className="object-cover" />
+                <div className="relative h-24 w-24 shrink-0 overflow-hidden bg-[#f3f3f3]">
+                  <Image src={line.image} alt={line.title} fill className="object-contain p-1" />
                 </div>
                 <div className="flex flex-1 items-start justify-between gap-4">
                   <div>

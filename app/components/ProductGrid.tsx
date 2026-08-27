@@ -1,24 +1,23 @@
-import Image from "next/image";
 import Link from "next/link";
 import { PriceDisplay } from "./PriceDisplay";
+import { ProductPhoto } from "./ProductPhoto";
+import { StockStatus } from "./StockBadge";
 import { type Product } from "@/lib/products";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
     <article className="group">
       <Link href={`/products/${product.slug}`} className="block">
-        <div className="relative aspect-square overflow-hidden bg-neutral-100">
-          <Image
-            src={product.image}
-            alt={product.title}
-            fill
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition duration-700 ease-out group-hover:scale-110"
-          />
-        </div>
+        <ProductPhoto product={product} size="card" />
         <h3 className="mt-3 text-center text-sm font-medium">{product.title}</h3>
+        <p className="mt-0.5 text-center text-[11px] tracking-wide text-neutral-500">
+          {product.volume}
+        </p>
         <div className="mt-1">
           <PriceDisplay amount={product.price} compareAt={product.compareAt} />
+        </div>
+        <div className="mt-1.5">
+          <StockStatus stock={product.stock} />
         </div>
       </Link>
     </article>

@@ -213,7 +213,7 @@ export function SiteHeader() {
 
                       <Link
 
-                        key={child.href + child.label}
+                        key={child.href}
 
                         href={child.href}
 
@@ -292,7 +292,7 @@ export function SiteHeader() {
 
                   <Link
 
-                    key={child.href + child.label}
+                    key={child.href}
 
                     href={child.href}
 
