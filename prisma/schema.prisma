@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(cuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  memberships  Membership[]
+  sessions     Session[]
+  orders       Order[]
+}
+
+model Company {
+  id           String         @id @default(cuid())
+  name         String
+  slug         String         @unique
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  memberships  Membership[]
+  orders       Order[]
+  invites      Invite[]
+  appointments Appointment[]
+}
+
+model Membership {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  companyId String
+  role      String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Invite {
+  id        String   @id @default(cuid())
+  companyId String
+  email     String
+  token     String   @unique
+  role      String   @default("MEMBER")
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, email])
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  companyId String
+  userId    String?
+  status    String      @default("CONFIRMED")
+  totalPkr  Int
+  createdAt DateTime    @default(now())
+  company   Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user      User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items     OrderItem[]
+
+  @@index([companyId])
+  @@index([userId])
+}
+
+model OrderItem {
+  id          String @id @default(cuid())
+  orderId     String
+  productSlug String
+  title       String
+  pricePkr    Int
+  qty         Int
+  image       String
+  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Appointment {
+  id          String    @id @default(cuid())
+  companyId   String?
+  name        String
+  email       String
+  companyName String
+  notes       String    @default("")
+  createdAt   DateTime  @default(now())
+  company     Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  @@index([companyId])
+}
