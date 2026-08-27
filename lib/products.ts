@@ -95,7 +95,9 @@ function item(
   };
 }
 
-function scentPhoto(kind: ProductKind, slug: string) {
+export type PhotoKind = "bottle" | "diffuser" | "candle";
+
+function scentPhoto(kind: PhotoKind, slug: string) {
   return `/products/scents/${kind}-${slug}.png`;
 }
 
@@ -105,6 +107,7 @@ function line(opts: {
   collection: string;
   tags: string[];
   kind: ProductKind;
+  photo?: PhotoKind;
   volume: string;
   labelKind: string;
   labelUse: string;
@@ -112,12 +115,13 @@ function line(opts: {
   step: number;
   extra: string;
 }): Product[] {
+  const photo = opts.photo ?? opts.kind;
   return scents.map(([slug, name, note], index) =>
     item(
       `${opts.prefix}-${slug}`,
       opts.titleOf(name),
       opts.basePrice + index * opts.step,
-      scentPhoto(opts.kind, slug),
+      scentPhoto(photo, slug),
       opts.collection,
       opts.tags,
       `${note} ${opts.extra}`,
@@ -355,6 +359,7 @@ const catalog = [
     titleOf: (name: string) => `${name} Candle`,
     collection: "candles",
     kind: "bottle" as const,
+    photo: "candle" as const,
     volume: "200 g",
     labelKind: "Scented Candle",
     labelUse: "Soy wax · slow burn",
