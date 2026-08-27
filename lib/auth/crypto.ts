@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 
 const COOKIE = "skydust_session";
 const SESSION_DAYS = 14;
+const DEV_SECRET = "skydust-dev-auth-secret-change-me";
 
 export function sessionCookieName() {
   return COOKIE;
@@ -24,12 +25,12 @@ export function createSessionToken() {
   return randomBytes(32).toString("hex");
 }
 
+function authSecret() {
+  return process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || DEV_SECRET;
+}
+
 export function hashSessionToken(token: string) {
-  const secret = process.env.AUTH_SECRET;
-  if (!secret) {
-    throw new Error("Missing AUTH_SECRET");
-  }
-  return createHash("sha256").update(`${secret}:${token}`).digest("hex");
+  return createHash("sha256").update(`${authSecret()}:${token}`).digest("hex");
 }
 
 export function slugifyCompany(name: string) {
@@ -44,4 +45,22 @@ export function slugifyCompany(name: string) {
 
 export function publicError(message: string) {
   return { error: message };
+}
+
+export function isNextControlFlowError(error: unknown) {
+  if (typeof error !== "object" || error === null || !("digest" in error)) return false;
+  const digest = String((error as { digest?: unknown }).digest ?? "");
+  return digest.startsWith("NEXT_REDIRECT") || digest.startsWith("NEXT_NOT_FOUND");
+}
+
+export function signupFailureMessage(error: unknown) {
+  const code =
+    typeof error === "object" && error !== null && "code" in error
+      ? String((error as { code?: unknown }).code)
+      : "";
+  if (code === "P2002") return "An account with this email already exists.";
+  if (code === "P1003" || code === "P1001" || code === "P1010") {
+    return "Database is not ready. Try again in a moment.";
+  }
+  return "Could not create your account. Try again.";
 }

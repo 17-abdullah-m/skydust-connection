@@ -7,7 +7,14 @@ import {
   destroyCurrentSession,
   getTenantContext,
 } from "@/lib/auth/session";
-import { hashPassword, publicError, slugifyCompany, verifyPassword } from "@/lib/auth/crypto";
+import {
+  hashPassword,
+  isNextControlFlowError,
+  publicError,
+  signupFailureMessage,
+  slugifyCompany,
+  verifyPassword,
+} from "@/lib/auth/crypto";
 import { loginSchema, signUpSchema } from "@/lib/validations";
 
 export type AuthState = { error?: string };
@@ -28,6 +35,7 @@ export async function signUpAction(
   }
 
   const { name, email, password, companyName, inviteToken } = parsed.data;
+  let userId: string;
 
   try {
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -60,7 +68,7 @@ export async function signUpAction(
         },
       });
       await prisma.invite.delete({ where: { id: invite.id } });
-      await createUserSession(user.id);
+      userId = user.id;
     } else {
       if (!companyName) {
         return publicError("Enter a company name.");
@@ -81,12 +89,15 @@ export async function signUpAction(
           },
         },
       });
-      await createUserSession(user.id);
+      userId = user.id;
     }
-  } catch {
-    return publicError("Could not create your account. Try again.");
+  } catch (error) {
+    if (isNextControlFlowError(error)) throw error;
+    console.error("signUpAction", error);
+    return publicError(signupFailureMessage(error));
   }
 
+  await createUserSession(userId);
   redirect("/dashboard");
 }
 
@@ -102,6 +113,7 @@ export async function loginAction(
     return publicError(parsed.error.issues[0]?.message ?? "Check the form and try again.");
   }
 
+  let userId: string;
   try {
     const user = await prisma.user.findUnique({
       where: { email: parsed.data.email },
@@ -114,11 +126,14 @@ export async function loginAction(
     if (!ok) {
       return publicError("Invalid email or password.");
     }
-    await createUserSession(user.id);
-  } catch {
+    userId = user.id;
+  } catch (error) {
+    if (isNextControlFlowError(error)) throw error;
+    console.error("loginAction", error);
     return publicError("Could not sign you in. Try again.");
   }
 
+  await createUserSession(userId);
   const next = String(formData.get("next") || "/dashboard");
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
   redirect(safeNext);
