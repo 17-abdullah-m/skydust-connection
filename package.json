@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate",
+    "postinstall": "node scripts/ensure-prisma-env.js && prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push"
   },
