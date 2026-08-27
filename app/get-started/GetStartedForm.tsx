@@ -11,14 +11,11 @@ export function GetStartedForm() {
       <div className="mt-10 rounded-2xl border border-[#7eb89a]/40 bg-[#f3faf6] p-6 text-center">
         <p className="font-display text-2xl font-semibold">Tenant queued</p>
         <p className="mt-3 text-sm leading-6 text-[#1c2430]/65">
-          Your company workspace is ready to connect. Next, Admin login and
-          Manager invites will write to Firebase.
+          Your request is in. Next, log in with Google, Facebook, or your phone
+          number.
         </p>
-        <Link
-          href="/login/admin"
-          className="mt-6 inline-flex text-sm font-medium text-[#7eb89a]"
-        >
-          Go to Admin login →
+        <Link href="/login" className="mt-6 inline-flex text-sm font-medium text-[#7eb89a]">
+          Go to login →
         </Link>
       </div>
     );
