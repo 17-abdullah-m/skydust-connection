@@ -3,15 +3,43 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { signUpAction, type AuthState } from "@/app/actions/auth";
+import { AuthDivider, GoogleSignUpButton } from "../components/GoogleSignInButton";
 
 const initial: AuthState = {};
 
-export function SignUpForm({ inviteToken, inviteEmail }: { inviteToken?: string; inviteEmail?: string }) {
+const googleErrors: Record<string, string> = {
+  google_not_configured: "Google sign-up is not configured yet.",
+  google_denied: "Google sign-up was cancelled.",
+  google_invalid: "Google sign-up failed. Try again.",
+  google_failed: "Google sign-up failed. Try again.",
+};
+
+export function SignUpForm({
+  inviteToken,
+  inviteEmail,
+  error,
+}: {
+  inviteToken?: string;
+  inviteEmail?: string;
+  error?: string;
+}) {
   const [state, action, pending] = useActionState(signUpAction, initial);
   const joining = Boolean(inviteToken);
+  const googleError = error ? googleErrors[error] || "Google sign-up failed. Try again." : null;
 
   return (
-    <form action={action} className="mt-8 space-y-5">
+    <div className="mt-8 space-y-5">
+      <GoogleSignUpButton
+        inviteToken={inviteToken}
+        label={joining ? "Join with Google" : "Sign up with Google"}
+      />
+      <AuthDivider />
+      {googleError ? (
+        <p className="text-sm text-red-600" role="alert">
+          {googleError}
+        </p>
+      ) : null}
+      <form action={action} className="space-y-5">
       {inviteToken ? <input type="hidden" name="inviteToken" value={inviteToken} /> : null}
       <div>
         <label htmlFor="name" className="text-sm text-neutral-700">
@@ -89,6 +117,7 @@ export function SignUpForm({ inviteToken, inviteEmail }: { inviteToken?: string;
           Log in
         </Link>
       </p>
-    </form>
+      </form>
+    </div>
   );
 }

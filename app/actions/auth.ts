@@ -15,6 +15,11 @@ import {
   slugifyCompany,
   verifyPassword,
 } from "@/lib/auth/crypto";
+import {
+  parsePendingGoogleToken,
+  pendingGoogleCookieName,
+} from "@/lib/auth/oauth-state";
+import { cookies } from "next/headers";
 import { loginSchema, signUpSchema } from "@/lib/validations";
 
 export type AuthState = { error?: string };
@@ -122,6 +127,9 @@ export async function loginAction(
     if (!user || user.memberships.length === 0) {
       return publicError("Invalid email or password.");
     }
+    if (!user.passwordHash) {
+      return publicError("This account uses Google sign-in.");
+    }
     const ok = await verifyPassword(parsed.data.password, user.passwordHash);
     if (!ok) {
       return publicError("Invalid email or password.");
@@ -137,6 +145,116 @@ export async function loginAction(
   const next = String(formData.get("next") || "/dashboard");
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
   redirect(safeNext);
+}
+
+export async function completeGoogleSignUpAction(
+  _prev: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const store = await cookies();
+  const token = store.get(pendingGoogleCookieName)?.value;
+  const profile = token ? parsePendingGoogleToken(token) : null;
+  if (!profile) {
+    return publicError("Your Google sign-in expired. Try again.");
+  }
+
+  const inviteToken = profile.inviteToken || String(formData.get("inviteToken") || "") || undefined;
+  const companyName = String(formData.get("companyName") || "").trim();
+  if (!inviteToken && companyName.length < 2) {
+    return publicError("Enter a company name.");
+  }
+
+  let userId: string;
+  try {
+    const existing = await prisma.user.findFirst({
+      where: {
+        OR: [{ googleId: profile.googleId }, { email: profile.email }],
+      },
+      include: { memberships: true },
+    });
+    if (existing?.memberships.length) {
+      userId = existing.id;
+    } else if (inviteToken) {
+      const invite = await prisma.invite.findUnique({ where: { token: inviteToken } });
+      if (!invite || invite.expiresAt < new Date()) {
+        return publicError("This invite link is invalid or has expired.");
+      }
+      if (invite.email !== profile.email) {
+        return publicError("Use the email address this invite was sent to.");
+      }
+
+      const user = existing
+        ? await prisma.user.update({
+            where: { id: existing.id },
+            data: {
+              googleId: profile.googleId,
+              name: profile.name,
+              image: profile.image,
+              memberships: {
+                create: {
+                  companyId: invite.companyId,
+                  role: invite.role === "ADMIN" ? "ADMIN" : "MEMBER",
+                },
+              },
+            },
+          })
+        : await prisma.user.create({
+            data: {
+              name: profile.name,
+              email: profile.email,
+              googleId: profile.googleId,
+              image: profile.image,
+              memberships: {
+                create: {
+                  companyId: invite.companyId,
+                  role: invite.role === "ADMIN" ? "ADMIN" : "MEMBER",
+                },
+              },
+            },
+          });
+      await prisma.invite.delete({ where: { id: invite.id } });
+      userId = user.id;
+    } else {
+      const company = await prisma.company.create({
+        data: {
+          name: companyName,
+          slug: slugifyCompany(companyName),
+        },
+      });
+      const user = existing
+        ? await prisma.user.update({
+            where: { id: existing.id },
+            data: {
+              googleId: profile.googleId,
+              name: profile.name,
+              image: profile.image,
+              memberships: {
+                create: { companyId: company.id, role: "ADMIN" },
+              },
+            },
+          })
+        : await prisma.user.create({
+            data: {
+              name: profile.name,
+              email: profile.email,
+              googleId: profile.googleId,
+              image: profile.image,
+              memberships: {
+                create: { companyId: company.id, role: "ADMIN" },
+              },
+            },
+          });
+      userId = user.id;
+    }
+  } catch (error) {
+    if (isNextControlFlowError(error)) throw error;
+    console.error("completeGoogleSignUpAction", error);
+    return publicError(signupFailureMessage(error));
+  }
+
+  store.set({ name: pendingGoogleCookieName, value: "", maxAge: 0, path: "/" });
+  await createUserSession(userId);
+  redirect("/dashboard");
 }
 
 export async function logoutAction() {

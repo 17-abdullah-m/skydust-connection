@@ -9,9 +9,9 @@ export const dynamic = "force-dynamic";
 export default async function SignUpPage({
   searchParams,
 }: {
-  searchParams: Promise<{ invite?: string }>;
+  searchParams: Promise<{ invite?: string; error?: string }>;
 }) {
-  const { invite } = await searchParams;
+  const { invite, error } = await searchParams;
   let inviteEmail: string | undefined;
   if (invite) {
     const row = await prisma.invite.findUnique({ where: { token: invite } });
@@ -40,7 +40,7 @@ export default async function SignUpPage({
             ? "Finish your invite to access the company dashboard."
             : "Name, email, password, and company — you become the admin."}
         </p>
-        <SignUpForm inviteToken={invite} inviteEmail={inviteEmail} />
+        <SignUpForm inviteToken={invite} inviteEmail={inviteEmail} error={error} />
       </main>
     </div>
   );

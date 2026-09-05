@@ -4,16 +4,28 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { loginAction, type AuthState } from "@/app/actions/auth";
 import { useSearchParams } from "next/navigation";
+import { AuthDivider, GoogleSignInButton } from "../components/GoogleSignInButton";
 
 const initial: AuthState = {};
+
+const googleErrors: Record<string, string> = {
+  google_not_configured: "Google sign-in is not configured yet.",
+  google_denied: "Google sign-in was cancelled.",
+  google_invalid: "Google sign-in failed. Try again.",
+  google_failed: "Google sign-in failed. Try again.",
+};
 
 export function LoginForm() {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || "/dashboard";
+  const googleError = googleErrors[searchParams.get("error") || ""] || null;
   const [state, action, pending] = useActionState(loginAction, initial);
 
   return (
-    <form action={action} className="mt-8 space-y-5">
+    <div className="mt-8 space-y-5">
+      <GoogleSignInButton mode="login" next={next} label="Sign in with Google" />
+      <AuthDivider />
+      <form action={action} className="space-y-5">
       <input type="hidden" name="next" value={next} />
       <div>
         <label htmlFor="email" className="text-sm text-neutral-700">
@@ -41,6 +53,11 @@ export function LoginForm() {
           className="mt-2 w-full border border-neutral-300 px-3 py-3 text-sm outline-none focus:border-black"
         />
       </div>
+      {googleError ? (
+        <p className="text-sm text-red-600" role="alert">
+          {googleError}
+        </p>
+      ) : null}
       {state.error ? (
         <p className="text-sm text-red-600" role="alert">
           {state.error}
@@ -59,6 +76,7 @@ export function LoginForm() {
           Create a company account
         </Link>
       </p>
-    </form>
+      </form>
+    </div>
   );
 }
