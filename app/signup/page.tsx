@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { SiteHeader } from "../components/SiteChrome";
 import { prisma } from "@/lib/db";
 import { SignUpForm } from "./SignUpForm";
-
+import { GoogleSignUpButton } from "../components/GoogleSignInButton";
 export const dynamic = "force-dynamic";
 
 export default async function SignUpPage({
@@ -41,7 +41,14 @@ export default async function SignUpPage({
             : "Name, email, password, and company — you become the admin."}
         </p>
         <SignUpForm inviteToken={invite} inviteEmail={inviteEmail} error={error} />
-      </main>
+        <div className="mt-6 text-center">
+          <GoogleSignUpButton
+            next="/dashboard"
+            inviteToken={invite}
+            label="Sign up with Google"
+            onError={null}
+          />
+        </div>      </main>
     </div>
   );
 }
