@@ -257,6 +257,152 @@ export async function completeGoogleSignUpAction(
   redirect("/dashboard");
 }
 
+export type FirebaseGoogleAuthResult =
+  | { ok: true; redirectTo: string }
+  | { ok: false; error: string };
+
+export async function syncFirebaseGoogleSessionAction(input: {
+  idToken: string;
+  inviteToken?: string;
+  next?: string;
+}): Promise<FirebaseGoogleAuthResult> {
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+  if (!apiKey) {
+    return { ok: false, error: "Firebase API key is missing. Check NEXT_PUBLIC_FIREBASE_API_KEY." };
+  }
+
+  let verified: { uid: string; email: string; name: string; image?: string };
+  try {
+    const res = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken: input.idToken }),
+      },
+    );
+    if (!res.ok) {
+      return { ok: false, error: "Firebase token verification failed. Please try again." };
+    }
+    const data = (await res.json()) as {
+      users?: Array<{
+        localId: string;
+        email?: string;
+        displayName?: string;
+        photoUrl?: string;
+      }>;
+    };
+    const user = data.users?.[0];
+    if (!user || !user.email) {
+      return { ok: false, error: "No email associated with this Google account." };
+    }
+    verified = {
+      uid: user.localId,
+      email: user.email.toLowerCase(),
+      name: user.displayName || user.email.split("@")[0],
+      image: user.photoUrl || undefined,
+    };
+  } catch (err) {
+    console.error("Firebase token verification error:", err);
+    return { ok: false, error: "Could not verify Google authentication. Check network." };
+  }
+
+  const safeNext = input.next && input.next.startsWith("/") && !input.next.startsWith("//")
+    ? input.next
+    : "/dashboard";
+
+  try {
+    const existing = await prisma.user.findFirst({
+      where: {
+        OR: [{ googleId: verified.uid }, { email: verified.email }],
+      },
+      include: { memberships: true },
+    });
+
+    if (existing && existing.memberships.length > 0) {
+      if (!existing.googleId || (verified.image && existing.image !== verified.image)) {
+        await prisma.user.update({
+          where: { id: existing.id },
+          data: {
+            googleId: verified.uid,
+            image: verified.image ?? existing.image,
+          },
+        });
+      }
+      await createUserSession(existing.id);
+      return { ok: true, redirectTo: safeNext };
+    }
+
+    if (input.inviteToken) {
+      const invite = await prisma.invite.findUnique({ where: { token: input.inviteToken } });
+      if (!invite || invite.expiresAt < new Date()) {
+        return { ok: false, error: "This invite link is invalid or has expired." };
+      }
+      if (invite.email.toLowerCase() !== verified.email) {
+        return {
+          ok: false,
+          error: `This invite was sent to ${invite.email}. Please sign in with that Google account.`,
+        };
+      }
+
+      const user = existing
+        ? await prisma.user.update({
+            where: { id: existing.id },
+            data: {
+              googleId: verified.uid,
+              name: existing.name || verified.name,
+              image: verified.image ?? existing.image,
+              memberships: {
+                create: {
+                  companyId: invite.companyId,
+                  role: invite.role === "ADMIN" ? "ADMIN" : "MEMBER",
+                },
+              },
+            },
+          })
+        : await prisma.user.create({
+            data: {
+              name: verified.name,
+              email: verified.email,
+              googleId: verified.uid,
+              image: verified.image,
+              memberships: {
+                create: {
+                  companyId: invite.companyId,
+                  role: invite.role === "ADMIN" ? "ADMIN" : "MEMBER",
+                },
+              },
+            },
+          });
+
+      await prisma.invite.delete({ where: { id: invite.id } });
+      await createUserSession(user.id);
+      return { ok: true, redirectTo: "/dashboard" };
+    }
+
+    const pendingToken = createPendingGoogleToken({
+      googleId: verified.uid,
+      email: verified.email,
+      name: verified.name,
+      image: verified.image,
+      inviteToken: input.inviteToken,
+    });
+    const store = await cookies();
+    store.set(pendingGoogleCookieName, pendingToken, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 10,
+    });
+    return { ok: true, redirectTo: "/signup/google" };
+  } catch (error) {
+    if (isNextControlFlowError(error)) throw error;
+    console.error("syncFirebaseGoogleSessionAction error:", error);
+    return { ok: false, error: "Could not complete sign-in. Please try again." };
+  }
+}
+
 export async function logoutAction() {
   await destroyCurrentSession();
   redirect("/login");
