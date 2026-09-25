@@ -1,16 +1,10 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { signInWithGooglePopup, formatFirebaseAuthError } from "@/lib/firebase-auth.client";
-import { syncFirebaseGoogleSessionAction } from "@/app/actions/auth";
+import Link from "next/link";
 
 type GoogleSignInButtonProps = {
   mode: "login" | "signup";
   next?: string;
   inviteToken?: string;
   label?: string;
-  onError?: (error: string | null) => void;
 };
 
 export function GoogleSignInButton({
@@ -18,62 +12,20 @@ export function GoogleSignInButton({
   next,
   inviteToken,
   label = mode === "signup" ? "Sign up with Google" : "Sign in with Google",
-  onError,
 }: GoogleSignInButtonProps) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [localError, setLocalError] = useState<string | null>(null);
-
-  async function handleGoogleClick() {
-    setLoading(true);
-    setLocalError(null);
-    onError?.(null);
-
-    try {
-      const credential = await signInWithGooglePopup();
-      const idToken = await credential.user.getIdToken();
-
-      const result = await syncFirebaseGoogleSessionAction({
-        idToken,
-        inviteToken,
-        next,
-      });
-
-      if (!result.ok) {
-        setLocalError(result.error);
-        onError?.(result.error);
-        setLoading(false);
-        return;
-      }
-
-      router.push(result.redirectTo);
-      router.refresh();
-    } catch (err: unknown) {
-      console.error("Google authentication error:", err);
-      const message = formatFirebaseAuthError(err);
-      setLocalError(message);
-      onError?.(message);
-      setLoading(false);
-    }
-  }
+  const params = new URLSearchParams({ mode });
+  if (next) params.set("next", next);
+  if (inviteToken) params.set("invite", inviteToken);
+  const href = `/api/auth/google?${params.toString()}`;
 
   return (
-    <div className="space-y-2">
-      <button
-        type="button"
-        onClick={handleGoogleClick}
-        disabled={loading}
-        className="flex w-full items-center justify-center gap-3 border border-neutral-300 bg-white py-3 text-sm font-medium text-neutral-900 transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        <GoogleMark />
-        {loading ? "Connecting to Google…" : label}
-      </button>
-      {localError && !onError ? (
-        <p className="text-sm text-red-600" role="alert">
-          {localError}
-        </p>
-      ) : null}
-    </div>
+    <Link
+      href={href}
+      className="flex w-full items-center justify-center gap-3 border border-neutral-300 bg-white py-3 text-sm font-medium text-neutral-900 transition hover:bg-neutral-50"
+    >
+      <GoogleMark />
+      {label}
+    </Link>
   );
 }
 
@@ -81,7 +33,6 @@ export function GoogleSignUpButton({
   next,
   inviteToken,
   label,
-  onError,
 }: Omit<GoogleSignInButtonProps, "mode">) {
   return (
     <GoogleSignInButton
@@ -89,7 +40,6 @@ export function GoogleSignUpButton({
       next={next}
       inviteToken={inviteToken}
       label={label || (inviteToken ? "Join with Google" : "Sign up with Google")}
-      onError={onError}
     />
   );
 }

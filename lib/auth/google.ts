@@ -18,7 +18,9 @@ function googleConfig() {
 }
 
 export function isGoogleAuthConfigured() {
-  return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
+  const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+  return Boolean(clientId && clientSecret);
 }
 
 export function buildGoogleAuthUrl(state: string) {
