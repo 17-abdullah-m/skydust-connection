@@ -22,9 +22,9 @@ export function formatFirebaseAuthError(error: unknown): string {
       case "auth/popup-closed-by-user":
         return "Sign-in popup was closed before completing.";
       case "auth/popup-blocked":
-        return "Sign-in popup was blocked by your browser. Please allow popups for localhost.";
+        return "Sign-in popup was blocked by your browser. Please allow popups for this site.";
       case "auth/unauthorized-domain":
-        return "This domain (localhost) is not authorized in Firebase Console. Please add localhost under Firebase Authentication -> Settings -> Authorized domains.";
+        return "This website's domain is not authorized for Google sign-in. Add it in Firebase Authentication -> Settings -> Authorized domains.";
       case "auth/operation-not-allowed":
         return "Google sign-in is not enabled in Firebase Authentication. Enable Google provider in the Firebase Console.";
       case "auth/cancelled-popup-request":

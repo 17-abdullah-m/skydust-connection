@@ -16,6 +16,7 @@ import {
   verifyPassword,
 } from "@/lib/auth/crypto";
 import {
+  createPendingGoogleToken,
   parsePendingGoogleToken,
   pendingGoogleCookieName,
 } from "@/lib/auth/oauth-state";

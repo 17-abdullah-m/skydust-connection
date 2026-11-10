@@ -1,4 +1,9 @@
-import Link from "next/link";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { syncFirebaseGoogleSessionAction } from "@/app/actions/auth";
+import { formatFirebaseAuthError, signInWithGooglePopup } from "@/lib/firebase-auth.client";
 
 type GoogleSignInButtonProps = {
   mode: "login" | "signup";
@@ -13,19 +18,47 @@ export function GoogleSignInButton({
   inviteToken,
   label = mode === "signup" ? "Sign up with Google" : "Sign in with Google",
 }: GoogleSignInButtonProps) {
-  const params = new URLSearchParams({ mode });
-  if (next) params.set("next", next);
-  if (inviteToken) params.set("invite", inviteToken);
-  const href = `/api/auth/google?${params.toString()}`;
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSignIn() {
+    if (pending) return;
+    setPending(true);
+    setError(null);
+    try {
+      const credential = await signInWithGooglePopup();
+      const result = await syncFirebaseGoogleSessionAction({
+        idToken: await credential.user.getIdToken(),
+        next,
+        inviteToken,
+      });
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      router.replace(result.redirectTo);
+      router.refresh();
+    } catch (error) {
+      setError(formatFirebaseAuthError(error));
+    } finally {
+      setPending(false);
+    }
+  }
 
   return (
-    <Link
-      href={href}
-      className="flex w-full items-center justify-center gap-3 border border-neutral-300 bg-white py-3 text-sm font-medium text-neutral-900 transition hover:bg-neutral-50"
+    <div>
+    <button
+      type="button"
+      onClick={handleSignIn}
+      disabled={pending}
+      className="flex w-full items-center justify-center gap-3 border border-neutral-300 bg-white py-3 text-sm font-medium text-neutral-900 transition hover:bg-neutral-50 disabled:opacity-50"
     >
       <GoogleMark />
-      {label}
-    </Link>
+      {pending ? "Connecting to Google…" : label}
+    </button>
+    {error ? <p className="mt-3 text-sm text-red-600" role="alert">{error}</p> : null}
+    </div>
   );
 }
 
